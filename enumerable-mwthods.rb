@@ -44,14 +44,20 @@ module Enumerable
 
   def my_map(&my_proc)
     result = []
-      self.my_each {|element| result << my_proc == nil ? yield(element) : my_proc.call(element)}
+      self.my_each {|element| result << my_proc.call(element)}
     result
+  end
+
+  def my_inject(acc = nil)
+    acc, *b = self
+    self.my_each { |i| acc = yield(acc, i) }
+    acc
   end
 end
 
-my_proc = Proc.new { |i| i.capitalize }
+my_proc = Proc.new { |i| i.upcase }
 array = [2, 5, 7, 6, 1]
-name = ["Collins",'Ada']
+name = ["collins",'ada']
 
 array.my_each { |i| puts "squre of number: #{i} ** 2 = #{i ** 2}" }
 array.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
@@ -61,4 +67,4 @@ name.my_any? {|i| puts i.is_a? Integer}
 array.my_none? { |i| puts i == 7 }
 puts array.my_count
 puts name.my_map(&my_proc)
-
+p array.my_inject { |i, j| i + j }
