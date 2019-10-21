@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Enumerable
   def my_each
     i = 0
@@ -44,7 +46,7 @@ module Enumerable
 
   def my_map(&my_proc)
     result = []
-     my_each { |element| result << my_proc.call(element) }
+    my_each { |element| result << my_proc.call(element) }
     result
   end
 
@@ -54,7 +56,7 @@ module Enumerable
   end
 end
 
-my_proc = Proc.new { |i| i.upcase }
+my_proc = proc { |i| i.upcase }
 array = [2, 5, 7, 6, 1]
 name = %w[collins ada]
 
