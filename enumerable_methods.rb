@@ -4,68 +4,116 @@ module Enumerable
   def my_each
     i = 0
     while i < length
-      yield self[i]
+      yield self[i] if block_given?
       i += 1
     end
+    self
   end
 
   def my_each_with_index
     i = 0
     while i < length
-      yield self[i], i
+      yield self[i], i if block_given?
       i += 1
     end
   end
 
   def my_select
     result = []
-    my_each { |i| result << i if yield(i) }
+    if block_given?
+      my_each { |i| result << i if yield(i) }
+    end
     result
   end
 
-  def my_any?
-    my_each { |i| true if yield(i) }
+  def my_any?(patern = false)
+    any = false
+    my_each do |i|
+      if block_given?
+        any = true if yield(i)
+      elsif patern == true
+        any = false if (patern == i) == false
+      else
+        any = false if i == false
+      end
+    end
+    any
   end
 
-  def my_all?
-    my_each { |i| true if yield(i) == true }
+  def my_all?(patern = false)
+    all = true
+    my_each do |i|
+      if block_given?
+        all = false if yield(i) == false
+      elsif patern == true
+        all = false if patern == i
+      else
+        all = false if i == false
+      end
+    end
+    all
   end
 
-  def my_none?
-    true unless block_given?
-    result = false
-    my_each { |i| true unless yield(i) }
+  def my_none?(partern = false)
+    result = true
+    my_each do |i|
+      if block_given?
+        result = false if yield(i)
+      elsif partern == true
+        result = false if (partern == i) == false
+      else
+        result = false if i == false
+      end
+    end
     result
   end
 
   def my_count
     i = 0
-    my_each { i += 1 }
+    if block_given?
+      my_each { i += 1 }
+    else
+      i = length
+    end
     i
   end
 
   def my_map(&my_proc)
     result = []
-    my_each { |element| result << my_proc.call(element) }
+    if block_given?
+      my_each { |element| result << my_proc.call(element) }
+    else
+      result = self
+    end
     result
   end
 
-  def my_inject(acc = nil)
-    my_each { |i| acc = yield(acc, i) }
-    acc
+  def my_inject(memo = nil)
+    memo ||= self[0]
+    if block_given?
+      my_each { |val| memo = yield memo, val }
+    end
+    memo
   end
 end
 
+def multiply_els(arr)
+  arr.my_inject { |memo, val| memo * val }
+end
 my_proc = proc { |i| i.upcase }
-array = [2, 5, 7, 6, 1]
-name = %w[collins ada]
+numb = [2, 5, 7, 6, 1]
+name = ['collins', 'ada']
 
-array.my_each { |i| puts "squre of number: #{i} ** 2 = #{i**2}" }
-array.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
-array.my_select { |i| puts i.even? }
-array.my_all? { |i| puts i <= 5 }
-name.my_any? { |i| puts i.is_a? Integer }
-array.my_none? { |i| puts i == 7 }
-puts array.my_count
-puts name.my_map(&my_proc)
-puts { array.my_inject { |i, j| i + j } }
+numb.my_each { |i| puts "squre of number: #{i} ** 2 = #{i**2}" }
+numb.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
+select = numb.my_select { |i| i.even? }
+print select
+all = numb.my_all? { |i| i < 8 }
+puts all
+any = name.my_any? { |i| i.is_a? Integer }
+puts any
+none = numb.my_none? { |i| i == 10 }
+print none
+puts numb.my_count
+print name.my_map
+puts multiply_els(numb)
