@@ -34,7 +34,7 @@ module Enumerable
       elsif patern == true
         any = false if (patern == i) == false
       else
-        any = false if i == false
+        any = false unless i != false
       end
     end
     any
@@ -48,7 +48,7 @@ module Enumerable
       elsif patern == true
         all = false if patern == i
       else
-        all = false if i == false
+        all = false unless i != false
       end
     end
     all
@@ -62,7 +62,7 @@ module Enumerable
       elsif partern == true
         result = false if (partern == i) == false
       else
-        result = false if i == false
+        result = false unless i != false
       end
     end
     result
@@ -90,9 +90,7 @@ module Enumerable
 
   def my_inject(memo = nil)
     memo ||= self[0]
-    if block_given?
-      my_each { |val| memo = yield memo, val }
-    end
+    my_each { |val| memo = yield memo, val } if block_given?
     memo
   end
 end
@@ -102,11 +100,11 @@ def multiply_els(arr)
 end
 my_proc = proc { |i| i.upcase }
 numb = [2, 5, 7, 6, 1]
-name = ['collins', 'ada']
+name = %w[collins ada]
 
 numb.my_each { |i| puts "squre of number: #{i} ** 2 = #{i**2}" }
 numb.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
-select = numb.my_select { |i| i.even? }
+select = numb.my_select(&:odd?)
 print select
 all = numb.my_all? { |i| i < 8 }
 puts all
@@ -115,5 +113,5 @@ puts any
 none = numb.my_none? { |i| i == 10 }
 print none
 puts numb.my_count
-print name.my_map
+print name.my_map(&my_proc)
 puts multiply_els(numb)
