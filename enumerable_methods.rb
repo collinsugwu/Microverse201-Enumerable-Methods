@@ -32,13 +32,13 @@ module Enumerable
     result
   end
 
-  def my_any?(patern = false)
+  def my_any?(patern = nil)
     any = false
     my_each do |i|
       if block_given?
         any = true if yield(i)
-      elsif patern == true
-        any = false if (patern == i) == false
+      elsif patern
+        any = false if pattern?(x, param)
       else
         any = false unless i != false
       end
@@ -46,13 +46,13 @@ module Enumerable
     any
   end
 
-  def my_all?(patern = false)
+  def my_all?(patern = nil)
     all = true
     my_each do |i|
       if block_given?
         all = false if yield(i) == false
       elsif patern == true
-        all = false if patern == i
+        all = false unless pattern?(x, param)
       else
         all = false unless i != false
       end
@@ -85,6 +85,8 @@ module Enumerable
   end
 
   def my_map(&my_proc)
+    return to_enum :my_map unless block_given?
+
     result = []
     if block_given?
       my_each { |element| result << my_proc.call(element) }
@@ -99,6 +101,12 @@ module Enumerable
     my_each { |val| memo = yield memo, val } if block_given?
     memo
   end
+
+  def pattern?(obj, pattern)
+    (obj.respond_to?(:eql?) && obj.eql?(pattern)) ||
+      (pattern.is_a?(Class) && obj.is_a?(pattern)) ||
+      (pattern.is_a?(Regexp) && pattern.match(obj))
+  end
 end
 
 def multiply_els(arr)
@@ -107,7 +115,6 @@ end
 my_proc = proc { |i| i.upcase }
 numb = [2, 5, 7, 6, 1]
 name = %w[collins ada]
-
 
 numb.my_each { |i| puts "squre of number: #{i} ** 2 = #{i**2}" }
 numb.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
