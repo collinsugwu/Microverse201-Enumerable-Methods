@@ -2,15 +2,19 @@
 
 module Enumerable
   def my_each
+    return to_enum(:my_each) unless block_given?
+
     i = 0
     while i < length
-      yield self[i] if block_given?
+      yield self[i]
       i += 1
     end
     self
   end
 
   def my_each_with_index
+    return to_enum(:my_each_with_index) unless block_given?
+
     i = 0
     while i < length
       yield self[i], i if block_given?
@@ -19,6 +23,8 @@ module Enumerable
   end
 
   def my_select
+    return to_enum(:my_select) unless block_given?
+
     result = []
     if block_given?
       my_each { |i| result << i if yield(i) }
@@ -102,11 +108,12 @@ my_proc = proc { |i| i.upcase }
 numb = [2, 5, 7, 6, 1]
 name = %w[collins ada]
 
+
 numb.my_each { |i| puts "squre of number: #{i} ** 2 = #{i**2}" }
 numb.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
 select = numb.my_select(&:odd?)
 print select
-all = numb.my_all? { |i| i < 8 }
+all = name.my_all? { |i| i.length >= 3 }
 puts all
 any = name.my_any? { |i| i.is_a? Integer }
 puts any
