@@ -34,44 +34,30 @@ module Enumerable
 
   def my_any?(patern = nil)
     any = false
-    my_each do |i|
-      if block_given?
-        any = true if yield(i)
-      elsif patern
-        any = false if pattern?(x, param)
-      else
-        any = false unless i != false
-      end
+    if block_given?
+      my_each { |i| any = true if yield i }
+    elsif patern
+      my_each { |i| any = true if patern === i }
+    else
+      my_each { |i| any = true if i }
     end
     any
   end
 
   def my_all?(patern = nil)
     all = true
-    my_each do |i|
-      if block_given?
-        all = false if yield(i) == false
-      elsif patern == true
-        all = false unless pattern?(x, param)
-      else
-        all = false unless i != false
-      end
+    if block_given?
+      my_each { |i| all &= yield i }
+    elsif patern
+      my_each { |i| all &= patern === i }
+    else
+      my_each { |i| all &= i }
     end
     all
   end
 
-  def my_none?(partern = false)
-    result = true
-    my_each do |i|
-      if block_given?
-        result = false if yield(i)
-      elsif partern == true
-        result = false if (partern == i) == false
-      else
-        result = false unless i != false
-      end
-    end
-    result
+  def my_none?(pattern = nil, &a_block)
+    !my_any?(pattern, &a_block)
   end
 
   def my_count
@@ -112,20 +98,12 @@ end
 def multiply_els(arr)
   arr.my_inject { |memo, val| memo * val }
 end
-my_proc = proc { |i| i.upcase }
-numb = [2, 5, 7, 6, 1]
-name = %w[collins ada]
 
-numb.my_each { |i| puts "squre of number: #{i} ** 2 = #{i**2}" }
-numb.my_each_with_index { |element, index| puts "index: #{index} and element: #{element}" }
-select = numb.my_select(&:odd?)
-print select
-all = name.my_all? { |i| i.length >= 3 }
-puts all
-any = name.my_any? { |i| i.is_a? Integer }
-puts any
-none = numb.my_none? { |i| i == 10 }
-print none
-puts numb.my_count
-print name.my_map(&my_proc)
-puts multiply_els(numb)
+puts %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
+puts %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
+puts %w{ant bear cat}.my_none?(/d/)                        #=> true
+puts [1, 3.14, 42].my_none?(Float)                         #=> false
+puts [].my_none?                                           #=> true
+puts [nil].my_none?                                        #=> true
+puts [nil, false].my_none?                                 #=> true
+puts [nil, false, true].my_none?                           #=> false
