@@ -37,7 +37,7 @@ module Enumerable
     if block_given?
       my_each { |i| any = true if yield i }
     elsif patern
-      my_each { |i| any = true if patern === i }
+      my_each { |i| any = true if patern.is_a?(Regexp) ? i =~ patern : i.is_a?(Integer) }
     else
       my_each { |i| any = true if i }
     end
@@ -49,7 +49,7 @@ module Enumerable
     if block_given?
       my_each { |i| all &= yield i }
     elsif patern
-      my_each { |i| all &= patern === i }
+      my_each { |i| all &= (patern.is_a?(Regexp) ? i =~ patern : i.is_a?(Numeric)) }
     else
       my_each { |i| all &= i }
     end
