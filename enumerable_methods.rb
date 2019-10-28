@@ -70,15 +70,11 @@ module Enumerable
     i
   end
 
-  def my_map(&my_proc)
+  def my_map
     return to_enum :my_map unless block_given?
 
     result = []
-    if block_given?
-      my_each { |element| result << my_proc.call(element) }
-    else
-      result = self
-    end
+    my_each { |element| result << yield(element) }
     result
   end
 
@@ -87,23 +83,8 @@ module Enumerable
     my_each { |val| memo = yield memo, val } if block_given?
     memo
   end
-
-  def pattern?(obj, pattern)
-    (obj.respond_to?(:eql?) && obj.eql?(pattern)) ||
-      (pattern.is_a?(Class) && obj.is_a?(pattern)) ||
-      (pattern.is_a?(Regexp) && pattern.match(obj))
-  end
 end
 
 def multiply_els(arr)
   arr.my_inject { |memo, val| memo * val }
 end
-
-puts %w{ant bear cat}.my_none? { |word| word.length == 5 } #=> true
-puts %w{ant bear cat}.my_none? { |word| word.length >= 4 } #=> false
-puts %w{ant bear cat}.my_none?(/d/)                        #=> true
-puts [1, 3.14, 42].my_none?(Float)                         #=> false
-puts [].my_none?                                           #=> true
-puts [nil].my_none?                                        #=> true
-puts [nil, false].my_none?                                 #=> true
-puts [nil, false, true].my_none?                           #=> false
