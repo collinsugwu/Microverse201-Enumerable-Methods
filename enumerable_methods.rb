@@ -60,14 +60,16 @@ module Enumerable
     !my_any?(pattern, &a_block)
   end
 
-  def my_count
-    i = 0
+  def my_count(things = nil)
+    counter = 0
     if block_given?
-      my_each { i += 1 }
+      my_each { |x| counter += 1 if yield(x) == true }
+    elsif things.nil?
+      my_each { counter += 1 }
     else
-      i = length
+      my_each { |x| counter += 1 if x == things }
     end
-    i
+    counter
   end
 
   def my_map
@@ -78,10 +80,28 @@ module Enumerable
     result
   end
 
-  def my_inject(memo = nil)
-    memo ||= self[0]
-    my_each { |val| memo = yield memo, val } if block_given?
-    memo
+  def my_inject(*args)
+    arr = to_a.dup
+    if args[0].nil?
+      numn = arr.shift
+    elsif args[1].nil? && !block_given?
+      symbol = args[0]
+      numn = arr.shift
+    elsif args[1].nil? && block_given?
+      numn = args[0]
+    else
+      numn = args[0]
+      symbol = args[1]
+    end
+
+    arr[0..-1].my_each do |i|
+      numn = if symbol
+               numn.send(symbol, i)
+             else
+               yield(numn, i)
+             end
+    end
+    numn
   end
 end
 

@@ -26,6 +26,10 @@ Style/ClassAndModuleChildren:
   Enabled: false
 Style/CaseEquality:
   Enabled: false
+Metrics/CyclomaticComplexity:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
 
 Layout/AlignHash:
   EnforcedColonStyle: key
