@@ -63,3 +63,34 @@ describe 'my_none' do
     expect([nil, false, true].my_none?).to be false
   end
 end
+
+describe 'my_count' do
+  ary = [1, 2, 4, 2]
+  it 'should get the count of the array items' do
+    expect(ary.my_count).to eql(4)
+  end
+
+  it 'should get the count of uniq array item' do
+    expect(ary.my_count(2)).to eql(2)
+  end
+end
+
+describe 'my_map' do
+  it 'should return an enum' do
+    expect([1, 2, 3].my_map).to be_instance_of(Enumerator)
+  end
+
+  it 'should return an array of maped data' do
+    expect([1, 2, 3, 4].my_map { |i| i * i }).to match_array([1, 4, 9, 16])
+  end
+end
+
+describe 'my_inject' do
+  it 'should return an accumulated total of data' do
+    expect((5..10).my_inject { |sum, n| sum + n }).to eql(45)
+  end
+
+  it 'should return an array of maped data' do
+    expect(%w[cat sheep bear].inject { |memo, word| memo.length > word.length ? memo : word }).to eql('sheep')
+  end
+end
