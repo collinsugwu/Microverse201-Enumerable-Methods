@@ -67,7 +67,7 @@ describe 'my_none' do
 end
 
 describe 'my_count' do
-  ary = [1, 2, 4, 2]
+  let(:ary) { [1, 2, 4, 2] }
   it 'should get the count of the array items' do
     expect(ary.my_count).to eql(4)
   end
