@@ -5,7 +5,7 @@ module Enumerable
     return to_enum(:my_each) unless block_given?
 
     i = 0
-    while i < length
+    while i < size
       yield self[i]
       i += 1
     end
