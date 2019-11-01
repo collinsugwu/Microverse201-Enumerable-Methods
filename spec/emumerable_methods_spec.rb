@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require './enumerable_methods.rb'
 
 describe 'my_each' do
