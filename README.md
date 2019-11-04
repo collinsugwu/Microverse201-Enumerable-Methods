@@ -112,9 +112,10 @@ Every enumerable method uses the custom my_each method to iterate through a Hash
   def my_each
     return to_enum(:my_each) unless block_given?
 
+    new_array = is_a?(Range) ? to_a : self
     i = 0
-    while i < length
-      yield self[i]
+    while i < new_array.size
+      yield new_array[i]
       i += 1
     end
     self
