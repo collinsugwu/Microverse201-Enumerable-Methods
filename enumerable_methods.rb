@@ -110,5 +110,3 @@ end
 def multiply_els(arr)
   arr.my_inject { |memo, val| memo * val }
 end
-
-puts %i[hello world].my_each_with_index.to_h
