@@ -14,14 +14,11 @@ module Enumerable
   end
 
   def my_each_with_index
-    return to_enum(:my_each_with_index) unless block_given?
+    return to_enum :my_each_with_index unless block_given?
 
-    new_array = is_a?(Range) ? to_a : self
     i = 0
-    while i < new_array.length
-      yield new_array[i], i if block_given?
-      i += 1
-    end
+    my_each { |x| yield x, i, i += 1 }
+    self
   end
 
   def my_select
@@ -29,7 +26,7 @@ module Enumerable
 
     result = []
     if block_given?
-      my_each { |i| result << i if yield(i) }
+      my_each { |i| result << i if yield i }
     end
     result
   end
