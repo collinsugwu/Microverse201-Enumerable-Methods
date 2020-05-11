@@ -135,6 +135,10 @@ Each method can use the custom my_each this way.
     result
   end
 ```
+Run Test
+```
+rspec
+```
 
 <!-- ROADMAP -->
 ## Roadmap
